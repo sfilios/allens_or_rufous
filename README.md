@@ -1,4 +1,4 @@
-# allens_or_rufous
+# Allens or Rufous
 
 This project is based on the Fast.ai assignment to create an image classifier using data that I gathered. I chose to build a classifier to discriminate Rufous and Allens Hummingbirds, two species that are notoriously difficult to tell apart. Humans are usually unable to do this task without looking at the spread of the tail of a hummingbird, and I was curious to see if a neural network could perform better.
 
