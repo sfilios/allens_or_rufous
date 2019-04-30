@@ -25,6 +25,8 @@ async def download_file(url, dest):
             with open(dest, 'wb') as f: f.write(data)
 
 async def setup_learner():
+    data = ImageDataBunch.from_csv(path="data", folder=".", valid_pct=0.2, csv_labels='cleaned.csv',
+        ds_tfms=get_transforms(), size=224, num_workers=4).normalize(imagenet_stats)
     learn = cnn_learner(data, models.resnet34, metrics=error_rate)
     learn.load(model_file_name)
     return "Testing!" #learn
