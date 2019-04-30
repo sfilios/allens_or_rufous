@@ -5,17 +5,17 @@ from starlette.middleware.cors import CORSMiddleware
 import uvicorn, aiohttp, asyncio
 from io import BytesIO
 
-from fastai import *
 from fastai.vision import *
 
 model_file_url = 'https://www.dropbox.com/s/p1p9kixmpzic1f1/stage-2.pth?raw=1'
-model_file_name = 'model'
+model_file_name = 'stage-2.pth'
 classes = ['allens', 'rufous']
 path = Path(__file__).parent
 
 app = Starlette()
-app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_headers=['X-Requested-With', 'Content-Type'])
+# app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_headers=['X-Requested-With', 'Content-Type'])
 app.mount('/static', StaticFiles(directory='app/static'))
+
 
 async def download_file(url, dest):
     if dest.exists(): return
@@ -25,12 +25,9 @@ async def download_file(url, dest):
             with open(dest, 'wb') as f: f.write(data)
 
 async def setup_learner():
-    await download_file(model_file_url, path/'models'/f'{model_file_name}.pth')
-    data_bunch = ImageDataBunch.single_from_classes(path, classes,
-        tfms=get_transforms(), size=224).normalize(imagenet_stats)
-    learn = cnn_learner(data_bunch, models.resnet34, pretrained=False)
+    learn = cnn_learner(data, models.resnet34, metrics=error_rate)
     learn.load(model_file_name)
-    return learn
+    return "Testing!" #learn
 
 loop = asyncio.get_event_loop()
 tasks = [asyncio.ensure_future(setup_learner())]
